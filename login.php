@@ -172,7 +172,18 @@ if (isset($_SESSION['usuario_id'])) {
                     body: JSON.stringify({ email, password })
                 });
                 
-                const data = await response.json();
+                const text = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch(e) {
+                    console.error("Respuesta del servidor no es JSON:", text);
+                    errorMsg.textContent = 'Error del servidor: ' + text.substring(0, 100);
+                    errorMsg.style.display = 'block';
+                    btn.textContent = 'Ingresar al Sistema';
+                    btn.disabled = false;
+                    return;
+                }
                 
                 if (data.success) {
                     window.location.href = 'dashboard.php';
