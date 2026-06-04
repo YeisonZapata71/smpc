@@ -18,7 +18,7 @@ if (!$id && !$ejercicio_id) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        body { padding: 0; background: var(--bg-color); }
+        body { padding: 0; background: var(--bg-color); overflow-y: auto !important; }
         .form-container {
             max-width: 900px;
             margin: 40px auto;
@@ -152,6 +152,14 @@ if (!$id && !$ejercicio_id) {
             background: #fee2e2;
             color: #991b1b;
             border: 1px solid #f87171;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-grid.col-3 { grid-template-columns: 1fr; }
+            .form-container { padding: 20px; margin: 20px; }
+            .form-header { flex-direction: column; gap: 15px; }
+            .btn-back { width: 100%; justify-content: center; }
         }
     </style>
 </head>
