@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS formularios_caracterizacion (
     id INT AUTO_INCREMENT PRIMARY KEY,
     ejercicio_id INT NOT NULL,
-    usuario_id INT NOT NULL,
+    usuario_id INT NULL,
     
     -- Funcionario responsable
     dependencia VARCHAR(255) NULL,
