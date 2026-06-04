@@ -1,3 +1,4 @@
+<?php require_once 'includes/auth_check.php'; ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -29,6 +30,20 @@
             </div>
             <div class="sidebar-menu" id="sector-menu">
                 <!-- Sectors will be injected here -->
+            </div>
+            
+            <div style="padding: 16px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 8px;">
+                <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 600; text-align: center; margin-bottom: 8px;">
+                    <i class="fa-solid fa-user"></i> <?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?>
+                </div>
+                <?php if ($_SESSION['usuario_rol'] === 'admin'): ?>
+                <a href="admin/usuarios.php" class="sector-item" style="text-decoration:none; padding: 10px;">
+                    <i class="fa-solid fa-gear"></i><span>Administración</span>
+                </a>
+                <?php endif; ?>
+                <a href="api/auth_logout.php" class="sector-item" style="text-decoration:none; padding: 10px; color: #ef4444;">
+                    <i class="fa-solid fa-right-from-bracket"></i><span>Cerrar Sesión</span>
+                </a>
             </div>
         </aside>
 

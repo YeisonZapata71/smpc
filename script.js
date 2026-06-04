@@ -19,96 +19,24 @@ const sectorIcons = {
     "Vivienda y servicios públicos": "fa-house-chimney"
 };
 
-// Extracted Data
-const rawData = [
-    {"Ejercicio": "Afrodescendiente", "Tipo": "Caracterización del territorio y la población afrodescendiente", "Sector": "1"},
-    {"Ejercicio": "Afrodescendiente", "Tipo": "Consulta a la población afrodescendiente relativa a instrumentos de política pública y de planificación territorial", "Sector": "2"},
-    {"Ejercicio": "Agricultura y desarrollo rural", "Tipo": "Implementación de estrategias de fortalecimiento a organizaciones agropecuarias", "Sector": "3"},
-    {"Ejercicio": "Agricultura y desarrollo rural", "Tipo": "Implementación del plan agropecuario mundial (PAM)", "Sector": "4"},
-    {"Ejercicio": "Agricultura y desarrollo rural", "Tipo": "Control social al plan agropecuario mundial (PAM)", "Sector": "5"},
-    {"Ejercicio": "Agricultura y desarrollo rural", "Tipo": "Diagnóstico o caracterización de asociaciones agropecuarias", "Sector": "6"},
-    {"Ejercicio": "Agricultura y desarrollo rural", "Tipo": "Diagnóstico de la última Feria del campo y la cosecha", "Sector": "7"},
-    {"Ejercicio": "Agricultura y desarrollo rural", "Tipo": "Implementación del Mercado Agro Verde para la comercialización de productos agropecuarios", "Sector": "8"},
-    {"Ejercicio": "Agricultura y desarrollo rural", "Tipo": "Días de campo: priorización de necesidades de asistencia técnica y extensión agropecuaria", "Sector": "9"},
-    {"Ejercicio": "Agricultura y desarrollo rural", "Tipo": "Días de campo: rendición de cuentas de la Secretaría de Agricultura y Desarrollo Rural", "Sector": "10"},
-    {"Ejercicio": "Ambiente y desarrollo sostenible", "Tipo": "Implementación de estrategias de educación ambiental", "Sector": "11"},
-    {"Ejercicio": "Ambiente y desarrollo sostenible", "Tipo": "Actualización del acto administrativo que reglamenta el CIDEAM", "Sector": "12"},
-    {"Ejercicio": "Ambiente y desarrollo sostenible", "Tipo": "Creación de rutas para la atención y seguimiento a casos de maltrato animal", "Sector": "13"},
-    {"Ejercicio": "Ambiente y desarrollo sostenible", "Tipo": "Implementación de la política pública de protección y bienestar animal", "Sector": "14"},
-    {"Ejercicio": "Ambiente y desarrollo sostenible", "Tipo": "Implementación de iniciativas de sostenibilidad ambiental", "Sector": "15"},
-    {"Ejercicio": "Ambiente y desarrollo sostenible", "Tipo": "Implementación de campañas para la gestión de cambio climático", "Sector": "16"},
-    {"Ejercicio": "Ambiente y desarrollo sostenible", "Tipo": "Un viaje por los sonidos de nuestro territorio: Identificación de niveles de ruido y presencia de fauna a través de ejercicios de cartografía socioambiental y juego interactivo", "Sector": "17"},
-    {"Ejercicio": "Ambiente y desarrollo sostenible", "Tipo": "Implementación de estrategias educativas y ambientales para reconocimiento, dignificación y fortalecimiento de capacidades de recuperadores ambientales", "Sector": "18"},
-    {"Ejercicio": "Comercio, industria y turismo", "Tipo": "Implementación del Plan Estratégico y la Política Pública de Turismo", "Sector": "19"},
-    {"Ejercicio": "Comercio, industria y turismo", "Tipo": "Control social del Plan Estratégico y la Política Pública de Turismo", "Sector": "20"},
-    {"Ejercicio": "Comercio, industria y turismo", "Tipo": "Selección de emprendedores beneficiarios de incentivos financieros del programa Red de Economía Social y Solidaria (REDESS)", "Sector": "21"},
-    {"Ejercicio": "Comercio, industria y turismo", "Tipo": "Control social a los recursos del programa Red de Economía Social y Solidaria (REDESS)", "Sector": "22"},
-    {"Ejercicio": "Cultura", "Tipo": "Implementación del plan estratégico y la política pública de cultura", "Sector": "23"},
-    {"Ejercicio": "Cultura", "Tipo": "Implementación de iniciativas ciudadanas para dinamización del sector cultural en sus eslabones de creación, formación, participación, investigación, circulación y patrimonio", "Sector": "24"},
-    {"Ejercicio": "Educación", "Tipo": "Control social al Programa de Alimentación Escolar (PAE)", "Sector": "25"},
-    {"Ejercicio": "Educación", "Tipo": "Implementación de las políticas educativas", "Sector": "26"},
-    {"Ejercicio": "Juventudes", "Tipo": "Implementación del programa Girardota es Joven y la oferta institucional para las juventudes", "Sector": "27"},
-    {"Ejercicio": "Juventudes", "Tipo": "Actualización de la Política Pública de Juventud", "Sector": "28"},
-    {"Ejercicio": "Juventudes", "Tipo": "Implementación de estrategias para la promoción de la ciudadanía y el liderazgo juvenil", "Sector": "29"},
-    {"Ejercicio": "Juventudes", "Tipo": "Asamblea Subregional de Juventudes", "Sector": "30"},
-    {"Ejercicio": "Mujeres", "Tipo": "Implementación de la política pública de mujer y género", "Sector": "31"},
-    {"Ejercicio": "Mujeres", "Tipo": "Control social a la política pública de mujer y género", "Sector": "32"},
-    {"Ejercicio": "Mujeres", "Tipo": "Implementación de estrategias de prevención y atención de violencias basadas en género", "Sector": "33"},
-    {"Ejercicio": "Niñez", "Tipo": "Actualización de diagnósticos del sector niñez", "Sector": "34"},
-    {"Ejercicio": "Niñez", "Tipo": "Construcción de política pública de infancia y primera infancia", "Sector": "35"},
-    {"Ejercicio": "Niñez", "Tipo": "Implementación de campañas para la garantía de derechos de la niñez", "Sector": "36"},
-    {"Ejercicio": "Paz y derechos humanos", "Tipo": "Implementación Plan de Acción Territorial (PAT) de la Política Pública Nacional de Víctimas", "Sector": "37"},
-    {"Ejercicio": "Paz y derechos humanos", "Tipo": "Control social del Plan de Acción Territorial (PAT) de la Política Pública Nacional de Víctimas", "Sector": "38"},
-    {"Ejercicio": "Paz y derechos humanos", "Tipo": "Priorización de problemáticas de convivencia y seguridad", "Sector": "39"},
-    {"Ejercicio": "Paz y derechos humanos", "Tipo": "Implementación de estrategias de promoción de la paz, la convivencia, la seguridad, la reconciliación y la no estigmatización", "Sector": "40"},
-    {"Ejercicio": "Paz y derechos humanos", "Tipo": "Implementación de estrategias de atención y protección a líderes y lideresas sociales y otras poblaciones especiales.", "Sector": "41"},
-    {"Ejercicio": "Paz y derechos humanos", "Tipo": "Implementación de la política pública de libertad religiosa y de cultos", "Sector": "42"},
-    {"Ejercicio": "Personas con discapacidad", "Tipo": "Implementación del programa y la Política Pública de Discapacidad", "Sector": "43"},
-    {"Ejercicio": "Personas con discapacidad", "Tipo": "Control social al programa y la Política Pública de Discapacidad", "Sector": "44"},
-    {"Ejercicio": "Personas con discapacidad", "Tipo": "Caracterización de personas con discapacidad y cuidadores y priorización de necesidades", "Sector": "45"},
-    {"Ejercicio": "Personas LGBTIQ+", "Tipo": "Implementación del programa Transformación con Equidad en la Diversidad", "Sector": "46"},
-    {"Ejercicio": "Personas LGBTIQ+", "Tipo": "Formulación participativa de política pública para la población LGBTI", "Sector": "47"},
-    {"Ejercicio": "Personas mayores", "Tipo": "Implementación de estrategias para la garantía de derechos de las personas mayores", "Sector": "48"},
-    {"Ejercicio": "Personas mayores", "Tipo": "Actualización de la política pública de envejecimiento y vejez", "Sector": "49"},
-    {"Ejercicio": "Personas mayores", "Tipo": "Control social a la política pública de envejecimiento y vejez", "Sector": "50"},
-    {"Ejercicio": "Salud", "Tipo": "Identificación y notificación de eventos de interés en salud pública", "Sector": "51"},
-    {"Ejercicio": "Salud", "Tipo": "Implementación de la política pública de seguridad alimentaria", "Sector": "52"},
-    {"Ejercicio": "Salud", "Tipo": "Veeduría ciudadana al Plan de Intervenciones Colectivas (PIC) y a los Equipos Básicos en Salud", "Sector": "53"},
-    {"Ejercicio": "Salud", "Tipo": "Implementación de jornadas Tu EPS al Parque para resolución de PQRS por barreras de acceso a los servicios de salud en el municipio", "Sector": "54"},
-    {"Ejercicio": "Salud", "Tipo": "Diálogo de líderes e instancias de participación en salud con EPS e IPS para mejorar el acceso a servicios de salud en el municipio", "Sector": "55"},
-    {"Ejercicio": "Salud", "Tipo": "Implementación de jornadas de promoción de la salud mental en entornos familiares y comunitarios", "Sector": "56"},
-    {"Ejercicio": "Salud", "Tipo": "Implementación de estrategias para fortalecer el Programa Ampliado de Inmunizaciones (PAI)", "Sector": "57"},
-    {"Ejercicio": "Salud", "Tipo": "Rendición pública de cuentas de la Secretaría de Salud y Protección Social para informar a la ciudadanía sobre los avances en la implementación del Plan Territorial de Salud en la vigencia 2026, generar diálogo y retroalimentación al respecto y asumir compromisos de mejoramiento", "Sector": "58"},
-    {"Ejercicio": "Transporte", "Tipo": "Priorización de problemáticas de movilidad y seguridad vial", "Sector": "59"},
-    {"Ejercicio": "Transporte", "Tipo": "Implementación de estrategias para avanzar hacia un sistema de transporte más eficiente, seguro y respetuoso con el entorno", "Sector": "60"},
-    {"Ejercicio": "Transversal", "Tipo": "Control social a la implementación del Plan de Desarrollo Territorial Decencia en lo Público para el año 2026", "Sector": "61"},
-    {"Ejercicio": "Transversal", "Tipo": "Elaboración y divulgación de boletín con agenda o cronograma de los ejercicios participativos", "Sector": "62"},
-    {"Ejercicio": "Transversal", "Tipo": "Implementación de estrategia lúdico – recreativa dirigida a la comunidad para la promoción de la participación ciudadana y el control social", "Sector": "63"},
-    {"Ejercicio": "Transversal", "Tipo": "Desarrollo de instrumento de participación para canalizar y hacer seguimiento a solicitudes de las instancias de participación y la comunidad a través de sus representantes", "Sector": "64"},
-    {"Ejercicio": "Transversal", "Tipo": "Jornadas de socialización y cabildo abierto para la formulación del Plan Básico de Ordenamiento Territorial (PBOT)", "Sector": "65"},
-    {"Ejercicio": "Transversal", "Tipo": "Socialización y retroalimentación de proyectos formulados con la población objetivo desde el Banco de Programas y Proyectos", "Sector": "66"},
-    {"Ejercicio": "Transversal", "Tipo": "Control social a políticas públicas sociales", "Sector": "67"},
-    {"Ejercicio": "Transversal", "Tipo": "Priorización e implementación de proyectos de inversión pública a través de la política pública de presupuesto participativo", "Sector": "68"},
-    {"Ejercicio": "Transversal", "Tipo": "Control social a los proyectos de presupuesto participativo por parte de comités veedores y el Consejo Municipal de Participación Ciudadana", "Sector": "69"},
-    {"Ejercicio": "Transversal", "Tipo": "Rendición pública de cuentas sobre los proyectos ejecutados con recursos de presupuesto participativo", "Sector": "70"},
-    {"Ejercicio": "Transversal", "Tipo": "Audiencia pública de rendición de cuentas de la Administración Municipal para informar a la ciudadanía sobre los avances en la implementación del Plan de Desarrollo Municipal en la vigencia 2026, generar diálogo y retroalimentación al respecto y asumir compromisos de mejoramiento", "Sector": "71"},
-    {"Ejercicio": "Vivienda y servicios públicos", "Tipo": "Control social a la aplicación y actualización de la estratificación urbana y rural para servicios públicos", "Sector": "72"},
-    {"Ejercicio": "Vivienda y servicios públicos", "Tipo": "Resolución en segunda instancia reclamos por la aplicación de la estratificación urbana y rural", "Sector": "73"},
-    {"Ejercicio": "Vivienda y servicios públicos", "Tipo": "Reactivación de la Mesa técnica para el fortalecimiento de las comunidades organizadas que prestan servicios públicos e implementación de política pública", "Sector": "74"},
-    {"Ejercicio": "Vivienda y servicios públicos", "Tipo": "Audiencia pública sobre actualización catastral", "Sector": "75"}
-];
+// Extracted Data will be loaded via API
+let rawData = [];
 
 // Group data by Sector
-const groupedData = {};
-rawData.forEach(item => {
-    const sectorName = item.Ejercicio; // From the JSON, "Ejercicio" is actually the Sector name
-    const exerciseName = item.Tipo;    // "Tipo" is the Exercise
-    
-    if (!groupedData[sectorName]) {
-        groupedData[sectorName] = [];
-    }
-    groupedData[sectorName].push(exerciseName);
-});
+let groupedData = {};
+
+function processData() {
+    groupedData = {};
+    rawData.forEach(item => {
+        const sectorName = item.Ejercicio; 
+        const exerciseName = item.Tipo;    
+        
+        if (!groupedData[sectorName]) {
+            groupedData[sectorName] = [];
+        }
+        groupedData[sectorName].push(exerciseName);
+    });
+}
 
 // Folder Structure Blueprint
 const folderStructure = [
@@ -431,16 +359,29 @@ function animateCounter(id, target, duration) {
 }
 
 // Initialize App
-function init() {
-    renderSidebar();
-    setupThemeToggle();
-    setupModal();
-    renderDashboard();
+async function init() {
+    try {
+        const res = await fetch('api/obtener_datos.php');
+        rawData = await res.json();
+        
+        if (rawData.length === 0) {
+            exercisesContainer.innerHTML = '<div style="padding: 40px; text-align: center; color: var(--text-muted); font-size: 1.2rem;">No tienes ejercicios asignados en este momento.</div>';
+            return;
+        }
 
-    // Logo click → back to dashboard
-    const sidebarHome = document.getElementById('sidebar-home');
-    if (sidebarHome) {
-        sidebarHome.addEventListener('click', () => renderDashboard());
+        processData();
+        renderSidebar();
+        setupThemeToggle();
+        setupModal();
+        renderDashboard();
+
+        // Logo click → back to dashboard
+        const sidebarHome = document.getElementById('sidebar-home');
+        if (sidebarHome) {
+            sidebarHome.addEventListener('click', () => renderDashboard());
+        }
+    } catch (err) {
+        console.error("Error cargando datos:", err);
     }
 }
 
