@@ -63,8 +63,74 @@ try {
             }
         }
         $pdo->commit();
+
+        // Enviar correo de bienvenida
+        require_once '../includes/PHPMailer/PHPMailer.php';
+        require_once '../includes/PHPMailer/SMTP.php';
+        require_once '../includes/PHPMailer/Exception.php';
+        require_once '../config/mail.php';
+
+        $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+        try {
+            $mail->isSMTP();
+            $mail->Host       = SMTP_HOST;
+            $mail->SMTPAuth   = true;
+            $mail->Username   = SMTP_USER;
+            $mail->Password   = SMTP_PASS;
+            $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
+            $mail->Port       = SMTP_PORT;
+
+            // Remitente y destinatario
+            $mail->setFrom(SMTP_USER, SMTP_FROM_NAME);
+            $mail->addAddress($correo, $nombre);
+            $mail->CharSet = 'UTF-8';
+
+            // Determinar la URL del sitio
+            $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+            $domain = $_SERVER['HTTP_HOST'];
+            $app_url = $protocol . "://" . $domain . "/smpc";
+
+            $mail->isHTML(true);
+            $mail->Subject = 'Bienvenido al SMPC - Alcaldía de Girardota';
+            
+            $html_body = "
+            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f4f7f6; padding: 20px;'>
+                <div style='background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);'>
+                    <div style='background-color: #16a34a; padding: 20px; text-align: center; color: white;'>
+                        <h1 style='margin: 0; font-size: 24px;'>Bienvenido al SMPC</h1>
+                        <p style='margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;'>Sistema Municipal de Participación Ciudadana</p>
+                    </div>
+                    <div style='padding: 30px;'>
+                        <h2 style='color: #1f2937; margin-top: 0;'>Hola, {$nombre}</h2>
+                        <p style='color: #4b5563; line-height: 1.6;'>
+                            Nos complace darte la bienvenida al <strong>Sistema Municipal de Participación Ciudadana (SMPC)</strong> de la Alcaldía de Girardota.
+                        </p>
+                        <p style='color: #4b5563; line-height: 1.6;'>
+                            Esta plataforma está diseñada para facilitar el seguimiento, gestión documental y caracterización de todos los ejercicios participativos de nuestro municipio, permitiendo una administración transparente y eficiente.
+                        </p>
+                        <div style='background-color: #f8fafc; border-left: 4px solid #16a34a; padding: 15px; margin: 25px 0; border-radius: 4px;'>
+                            <h3 style='margin-top: 0; color: #1f2937; font-size: 16px;'>Tus credenciales de acceso:</h3>
+                            <p style='margin: 5px 0; color: #4b5563;'><strong>Usuario/Correo:</strong> {$correo}</p>
+                            <p style='margin: 5px 0; color: #4b5563;'><strong>Contraseña:</strong> {$password_plana}</p>
+                        </div>
+                        <div style='text-align: center; margin: 35px 0;'>
+                            <a href='{$app_url}' style='background-color: #16a34a; color: #ffffff; text-decoration: none; padding: 12px 30px; border-radius: 6px; font-weight: bold; display: inline-block;'>Ingresar a la Plataforma</a>
+                        </div>
+                        <p style='color: #9ca3af; font-size: 12px; text-align: center; border-top: 1px solid #e5e7eb; padding-top: 15px;'>
+                            Te recomendamos cambiar tu contraseña al ingresar por primera vez.<br>
+                            ¡Girardota, Te Queremos!
+                        </p>
+                    </div>
+                </div>
+            </div>";
+
+            $mail->Body = $html_body;
+            $mail->send();
+        } catch (Exception $e) {
+            // Ignoramos el error para no romper la creación del usuario, pero se podría loguear.
+        }
         
-        echo json_encode(['success' => true, 'message' => 'Usuario creado exitosamente.']);
+        echo json_encode(['success' => true, 'message' => 'Usuario creado exitosamente y correo enviado.']);
     }
     elseif ($method === 'PUT') {
         // Actualizar asignación de ejercicios de un usuario (para simplificar, borramos y reinsertamos)
