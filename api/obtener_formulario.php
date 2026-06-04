@@ -20,7 +20,7 @@ try {
         $form = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($form) {
-            // Verificar acceso al ejercicio
+            // Verificar acceso
             if ($rol !== 'admin') {
                 $stmt_check = $pdo->prepare("SELECT 1 FROM usuarios_ejercicios WHERE usuario_id = :uid AND ejercicio_id = :eid");
                 $stmt_check->execute(['uid' => $usuario_id, 'eid' => $form['ejercicio_id']]);
@@ -30,11 +30,15 @@ try {
                 }
             }
             
-            // Obtener info adicional del ejercicio
+            // Info ejercicio
             $stmt_ej = $pdo->prepare("SELECT e.nombre as Tipo, s.nombre as Ejercicio FROM ejercicios e JOIN sectores s ON e.sector_id = s.id WHERE e.id = :eid");
             $stmt_ej->execute(['eid' => $form['ejercicio_id']]);
-            $ej_info = $stmt_ej->fetch(PDO::FETCH_ASSOC);
-            $form['info_ejercicio'] = $ej_info;
+            $form['info_ejercicio'] = $stmt_ej->fetch(PDO::FETCH_ASSOC);
+            
+            // Actividades
+            $stmt_act = $pdo->prepare("SELECT * FROM actividades_caracterizacion WHERE formulario_id = :fid ORDER BY id ASC");
+            $stmt_act->execute(['fid' => $id]);
+            $form['actividades'] = $stmt_act->fetchAll(PDO::FETCH_ASSOC);
             
             echo json_encode($form);
         } else {
@@ -43,7 +47,6 @@ try {
     } else if (isset($_GET['ejercicio_id'])) {
         $ejercicio_id = (int) $_GET['ejercicio_id'];
         
-        // Verificar acceso al ejercicio
         if ($rol !== 'admin') {
             $stmt_check = $pdo->prepare("SELECT 1 FROM usuarios_ejercicios WHERE usuario_id = :uid AND ejercicio_id = :eid");
             $stmt_check->execute(['uid' => $usuario_id, 'eid' => $ejercicio_id]);
@@ -53,12 +56,11 @@ try {
             }
         }
         
-        // Obtener info base del ejercicio para pre-llenar un formulario nuevo
         $stmt_ej = $pdo->prepare("SELECT e.nombre as Tipo, s.nombre as Ejercicio FROM ejercicios e JOIN sectores s ON e.sector_id = s.id WHERE e.id = :eid");
         $stmt_ej->execute(['eid' => $ejercicio_id]);
         $ej_info = $stmt_ej->fetch(PDO::FETCH_ASSOC);
         
-        echo json_encode(['is_new' => true, 'ejercicio_id' => $ejercicio_id, 'info_ejercicio' => $ej_info]);
+        echo json_encode(['is_new' => true, 'ejercicio_id' => $ejercicio_id, 'info_ejercicio' => $ej_info, 'actividades' => []]);
     }
 
 } catch (PDOException $e) {
