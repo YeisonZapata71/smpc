@@ -81,26 +81,11 @@ function renderDashboard() {
     const sectores = Object.keys(groupedData);
     const totalSectores = sectores.length;
 
-    // Simulated progress data per sector (realistic distribution)
-    const sectorProgress = {
-        'Afrodescendiente': { pct: 100, status: 'completed' },
-        'Agricultura y desarrollo rural': { pct: 78, status: 'in-progress' },
-        'Ambiente y desarrollo sostenible': { pct: 62, status: 'in-progress' },
-        'Comercio, industria y turismo': { pct: 50, status: 'in-progress' },
-        'Cultura': { pct: 100, status: 'completed' },
-        'Educación': { pct: 100, status: 'completed' },
-        'Juventudes': { pct: 75, status: 'in-progress' },
-        'Mujeres': { pct: 33, status: 'in-progress' },
-        'Niñez': { pct: 67, status: 'in-progress' },
-        'Paz y derechos humanos': { pct: 17, status: 'planned' },
-        'Personas con discapacidad': { pct: 33, status: 'planned' },
-        'Personas LGBTIQ+': { pct: 50, status: 'in-progress' },
-        'Personas mayores': { pct: 67, status: 'in-progress' },
-        'Salud': { pct: 25, status: 'planned' },
-        'Transporte': { pct: 50, status: 'in-progress' },
-        'Transversal': { pct: 18, status: 'planned' },
-        'Vivienda y servicios públicos': { pct: 25, status: 'planned' }
-    };
+    // Inicializar progreso en 0 para todos los sectores
+    const sectorProgress = {};
+    sectores.forEach(sector => {
+        sectorProgress[sector] = { pct: 0, status: 'planned' };
+    });
 
     const completados = Object.values(sectorProgress).filter(s => s.status === 'completed').length;
     const enProceso  = Object.values(sectorProgress).filter(s => s.status === 'in-progress').length;
@@ -279,47 +264,9 @@ function renderDashboard() {
             <span class="panel-badge">Live</span>
           </div>
           <div class="activity-feed">
-            <div class="activity-item">
-              <div class="activity-icon green"><i class="fa-solid fa-circle-check"></i></div>
-              <div class="activity-info">
-                <h4>Sector Educación completado</h4>
-                <p>2 ejercicios finalizados &middot; hace 2 días</p>
-              </div>
-            </div>
-            <div class="activity-item">
-              <div class="activity-icon green"><i class="fa-solid fa-circle-check"></i></div>
-              <div class="activity-info">
-                <h4>Sector Cultura completado</h4>
-                <p>2 ejercicios finalizados &middot; hace 3 días</p>
-              </div>
-            </div>
-            <div class="activity-item">
-              <div class="activity-icon amber"><i class="fa-solid fa-spinner"></i></div>
-              <div class="activity-info">
-                <h4>Transversal en progreso</h4>
-                <p>2 de 11 ejercicios &middot; Actualizado hoy</p>
-              </div>
-            </div>
-            <div class="activity-item">
-              <div class="activity-icon blue"><i class="fa-solid fa-calendar-plus"></i></div>
-              <div class="activity-info">
-                <h4>Salud: 8 ejercicios planeados</h4>
-                <p>Inicio programado &middot; Mayo 2026</p>
-              </div>
-            </div>
-            <div class="activity-item">
-              <div class="activity-icon amber"><i class="fa-solid fa-people-group"></i></div>
-              <div class="activity-info">
-                <h4>Juventudes en seguimiento</h4>
-                <p>3 de 4 ejercicios &middot; hace 1 semana</p>
-              </div>
-            </div>
-            <div class="activity-item">
-              <div class="activity-icon blue"><i class="fa-solid fa-dove"></i></div>
-              <div class="activity-info">
-                <h4>Paz y DDHH: inicio próximo</h4>
-                <p>6 ejercicios &middot; Convocatoria abierta</p>
-              </div>
+            <div style="padding: 20px; text-align: center; color: var(--text-muted); font-weight: 500; font-size: 0.9rem;">
+                <i class="fa-solid fa-clock-rotate-left" style="font-size: 2rem; color: var(--border-color); margin-bottom: 12px; display: block;"></i>
+                Aún no hay actividad reciente en el sistema.
             </div>
           </div>
         </div>
