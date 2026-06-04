@@ -3,7 +3,7 @@
 
 $host = 'localhost';
 $dbname = 'u541684808_smpc';
-$username = 'u541684808_smpc_user';
+$username = 'u541684808_user';
 $password = 'Sicau2026**';
 
 try {
