@@ -1,0 +1,3 @@
+
+# Ignore email configuration
+config/mail.php
