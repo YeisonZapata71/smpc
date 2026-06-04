@@ -374,26 +374,26 @@ if (!$id && !$ejercicio_id) {
             <div class="section-title"><i class="fa-solid fa-user-tie"></i> Funcionario Responsable</div>
             <div class="form-grid col-3">
                 <div class="form-group">
-                    <label>Dependencia</label>
-                    <input type="text" class="form-control" name="dependencia">
+                    <label>Dependencia *</label>
+                    <input type="text" class="form-control" name="dependencia" required>
                 </div>
                 <div class="form-group">
-                    <label>Nombre del Funcionario</label>
-                    <input type="text" class="form-control" name="funcionario_nombre">
+                    <label>Nombre del Funcionario *</label>
+                    <input type="text" class="form-control" name="funcionario_nombre" required>
                 </div>
                 <div class="form-group">
-                    <label>Cargo</label>
-                    <input type="text" class="form-control" name="funcionario_cargo">
+                    <label>Cargo *</label>
+                    <input type="text" class="form-control" name="funcionario_cargo" required>
                 </div>
             </div>
             <div class="form-grid">
                 <div class="form-group">
-                    <label>Teléfono</label>
-                    <input type="text" class="form-control" name="funcionario_telefono">
+                    <label>Teléfono *</label>
+                    <input type="text" class="form-control" name="funcionario_telefono" required>
                 </div>
                 <div class="form-group">
-                    <label>Correo Electrónico</label>
-                    <input type="email" class="form-control" name="funcionario_correo">
+                    <label>Correo Electrónico *</label>
+                    <input type="email" class="form-control" name="funcionario_correo" required>
                 </div>
             </div>
         </div>
@@ -402,18 +402,18 @@ if (!$id && !$ejercicio_id) {
         <div class="form-section" id="step-2">
             <div class="section-title"><i class="fa-solid fa-bullseye"></i> Objetivos y Metodología</div>
             <div class="form-group">
-                <label>Objetivo del ejercicio participativo</label>
-                <textarea class="form-control" name="objetivo" placeholder="Definición clara y medible de lo que se busca lograr..."></textarea>
+                <label>Objetivo del ejercicio participativo *</label>
+                <textarea class="form-control" name="objetivo" placeholder="Definición clara y medible de lo que se busca lograr..." required></textarea>
             </div>
             <div class="form-group">
-                <label>Metodología del ejercicio participativo</label>
-                <textarea class="form-control" name="metodologia" placeholder="Conjunto de técnicas, métodos y procedimientos..."></textarea>
+                <label>Metodología del ejercicio participativo *</label>
+                <textarea class="form-control" name="metodologia" placeholder="Conjunto de técnicas, métodos y procedimientos..." required></textarea>
             </div>
             
             <div class="section-title"><i class="fa-solid fa-handshake-angle"></i> Acompañamiento Requerido</div>
             <div class="form-group">
-                <label>Descripción del acompañamiento (Articulación con actores, Apoyo jurídico, Gestión de recursos, etc.)</label>
-                <textarea class="form-control" name="acompanamiento" placeholder="Describa el acompañamiento requerido..."></textarea>
+                <label>Descripción del acompañamiento (Articulación con actores, Apoyo jurídico, Gestión de recursos, etc.) *</label>
+                <textarea class="form-control" name="acompanamiento" placeholder="Describa el acompañamiento requerido..." required></textarea>
             </div>
         </div>
 
@@ -436,26 +436,26 @@ if (!$id && !$ejercicio_id) {
         <div class="form-section" id="step-4">
             <div class="section-title"><i class="fa-solid fa-chart-line"></i> Resultados de la Participación</div>
             <div class="form-group">
-                <label>¿Qué aportes realizaron los grupos de valor durante el ejercicio participativo?</label>
-                <textarea class="form-control" name="aportes"></textarea>
+                <label>¿Qué aportes realizaron los grupos de valor durante el ejercicio participativo? *</label>
+                <textarea class="form-control" name="aportes" required></textarea>
             </div>
             <div class="form-group">
-                <label>Describa las actuaciones administrativas realizadas para incorporar estos aportes</label>
-                <textarea class="form-control" name="actuaciones"></textarea>
+                <label>Describa las actuaciones administrativas realizadas para incorporar estos aportes *</label>
+                <textarea class="form-control" name="actuaciones" required></textarea>
             </div>
             <div class="form-group">
-                <label>¿A través de qué canales se informó a los grupos de valor sobre los resultados?</label>
-                <textarea class="form-control" name="canales_info"></textarea>
+                <label>¿A través de qué canales se informó a los grupos de valor sobre los resultados? *</label>
+                <textarea class="form-control" name="canales_info" required></textarea>
             </div>
 
             <div class="section-title"><i class="fa-solid fa-lightbulb"></i> Gestión del Conocimiento</div>
             <div class="form-group">
-                <label>Lecciones Aprendidas</label>
-                <textarea class="form-control" name="lecciones" placeholder="Conocimientos obtenidos reflexionando sobre el desarrollo..."></textarea>
+                <label>Lecciones Aprendidas *</label>
+                <textarea class="form-control" name="lecciones" placeholder="Conocimientos obtenidos reflexionando sobre el desarrollo..." required></textarea>
             </div>
             <div class="form-group">
-                <label>Buenas Prácticas</label>
-                <textarea class="form-control" name="buenas_practicas" placeholder="Acciones o metodologías efectivas replicables..."></textarea>
+                <label>Buenas Prácticas *</label>
+                <textarea class="form-control" name="buenas_practicas" placeholder="Acciones o metodologías efectivas replicables..." required></textarea>
             </div>
         </div>
 
@@ -748,6 +748,19 @@ function reindexActivities() {
 
 document.getElementById('caracterizacion-form').addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    // Validar el último paso antes de dejar guardar
+    const currentSection = document.getElementById(`step-${currentStep}`);
+    const requiredInputs = currentSection.querySelectorAll('input[required], textarea[required]');
+    let isValid = true;
+    requiredInputs.forEach(inp => {
+        if(!inp.checkValidity()) {
+            inp.reportValidity();
+            isValid = false;
+        }
+    });
+    if(!isValid) return;
+
     const btn = document.getElementById('btn-submit');
     const msj = document.getElementById('mensaje');
     
