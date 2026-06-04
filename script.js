@@ -34,7 +34,10 @@ function processData() {
         if (!groupedData[sectorName]) {
             groupedData[sectorName] = [];
         }
-        groupedData[sectorName].push(exerciseName);
+        groupedData[sectorName].push({
+            id: item.Sector,
+            name: exerciseName
+        });
     });
 }
 
@@ -369,11 +372,11 @@ function renderExercises(sector) {
     exercises.forEach((exercise, index) => {
         const iconClass = sectorIcons[sector] || 'fa-folder';
         html += `
-            <div class="exercise-card" onclick="openExerciseFolder('${escapeQuotes(exercise)}', '${escapeQuotes(sector)}')">
+            <div class="exercise-card" onclick="openExerciseFolder(${exercise.id}, '${escapeQuotes(exercise.name)}', '${escapeQuotes(sector)}')">
                 <div class="exercise-icon">
                     <i class="fa-solid ${iconClass}"></i>
                 </div>
-                <h3>${exercise}</h3>
+                <h3>${exercise.name}</h3>
                 <div class="card-footer">
                     <span>Explorar Carpetas</span>
                     <i class="fa-solid fa-arrow-right"></i>
@@ -391,17 +394,60 @@ function escapeQuotes(str) {
 }
 
 // Open Modal and render folder structure
-window.openExerciseFolder = function(exercise, sector) {
+window.openExerciseFolder = async function(id, exercise, sector) {
     modalExerciseTitle.textContent = exercise;
     modalSectorBadge.textContent = sector;
     
-    // Build folder tree HTML recursively
-    folderBrowserContainer.innerHTML = buildTreeHtml(folderStructure, true);
-    
-    // Attach event listeners to collapsibles
-    attachTreeListeners();
-    
-    folderModal.classList.add('active');
+    // Configurar la estructura de carpetas
+    // El primer item será un archivo dinámico con los formularios creados
+    try {
+        const res = await fetch('api/obtener_formularios_ejercicio.php?ejercicio_id=' + id);
+        const forms = await res.json();
+        
+        let formsChildren = [
+            { type: 'file', is_action: true, action: `window.location.href='formulario_caracterizacion.php?ejercicio_id=${id}'`, name: '<b>+ Crear Nuevo Formulario de Caracterización</b>', icon: 'fa-plus-circle' }
+        ];
+        
+        if (forms && forms.length > 0) {
+            forms.forEach(f => {
+                formsChildren.push({
+                    type: 'file',
+                    is_action: true,
+                    action: `window.location.href='formulario_caracterizacion.php?id=${f.id}'`,
+                    name: `Formulario: ${f.funcionario_nombre || 'Sin nombre'} (${new Date(f.fecha_creacion).toLocaleDateString()})`,
+                    icon: 'fa-file-signature'
+                });
+            });
+        }
+        
+        const dynamicStructure = [
+            { type: 'folder', name: 'Formatos de caracterización y seguimiento', children: formsChildren, isOpen: true },
+            { type: 'folder', name: 'Información clave', children: [] },
+            { type: 'folder', name: 'Normatividad', children: [] },
+            { type: 'folder', name: 'Pedagogía', children: [] },
+            { type: 'folder', name: 'Otros', children: [] },
+            { type: 'folder', name: 'Evidencias de actividades', children: [
+                { type: 'folder', name: 'Actividad 1', children: [
+                    { type: 'file', name: 'Acta', icon: 'fa-file-lines' },
+                    { type: 'file', name: 'Lista de asistencia', icon: 'fa-file-lines' },
+                    { type: 'file', name: 'Material audiovisual', icon: 'fa-file-video' },
+                    { type: 'file', name: 'Evaluación de la satisfacción', icon: 'fa-file-lines' },
+                    { type: 'folder', name: 'Otros', children: [] }
+                ]}
+            ]},
+            { type: 'folder', name: 'Resultados', children: [] }
+        ];
+
+        // Build folder tree HTML recursively
+        folderBrowserContainer.innerHTML = buildTreeHtml(dynamicStructure, true);
+        
+        // Attach event listeners to collapsibles
+        attachTreeListeners();
+        
+        folderModal.classList.add('active');
+    } catch(e) {
+        console.error("Error al cargar formularios", e);
+    }
 };
 
 function buildTreeHtml(nodes, isOpen = false) {
@@ -417,16 +463,17 @@ function buildTreeHtml(nodes, isOpen = false) {
                         <span>${node.name}</span>
                     </div>
                     ${hasChildren ? `
-                    <div class="tree-children" style="display: ${isOpen ? 'block' : 'none'}">
+                    <div class="tree-children" style="display: ${isOpen || node.isOpen ? 'block' : 'none'}">
                         ${buildTreeHtml(node.children, false)}
                     </div>
                     ` : ''}
                 </div>
             `;
         } else {
+            const actionStr = node.is_action ? `onclick="${node.action}" style="cursor:pointer; color:var(--primary-color)"` : '';
             html += `
                 <div class="tree-node">
-                    <div class="tree-item">
+                    <div class="tree-item" ${actionStr}>
                         <i style="visibility: hidden" class="fa-solid fa-chevron-right chevron"></i>
                         <i class="fa-solid ${node.icon || 'fa-file'}"></i>
                         <span>${node.name}</span>
