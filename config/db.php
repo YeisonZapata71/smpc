@@ -2,9 +2,9 @@
 // config/db.php
 
 $host = 'localhost';
-$dbname = 'smpc_db'; // Cambiar por el nombre de tu base de datos en Hostinger
-$username = 'root';  // Cambiar por tu usuario de DB
-$password = '';      // Cambiar por tu contraseña de DB
+$dbname = 'u541684808_smpc';
+$username = 'u541684808_smpc_user';
+$password = 'Sicau2026**';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
