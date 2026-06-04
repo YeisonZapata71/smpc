@@ -842,3 +842,11 @@ body {
 @media (max-width: 768px) {
     .kpi-row { grid-template-columns: 1fr; }
 }
+
+
+/* Upload Button and File Items */
+.btn-upload-small { background: #16a34a; color: white; border: none; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0.8; transition: opacity 0.2s, transform 0.2s; margin-left: 10px; }
+.btn-upload-small:hover { opacity: 1; transform: scale(1.1); }
+.empty-folder-msg { color: #94a3b8; font-style: italic; font-size: 0.85rem; padding: 5px 10px 5px 35px; }
+.file-item { color: #475569; }
+.file-item:hover { color: var(--primary-color); }

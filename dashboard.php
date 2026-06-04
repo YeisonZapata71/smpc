@@ -83,6 +83,44 @@
         </div>
     </div>
 
+    <!-- Modal for File Upload -->
+    <div class="modal-overlay" id="upload-modal" style="z-index: 2000;">
+        <div class="modal-content" style="max-width: 500px;">
+            <button class="modal-close" onclick="cerrarModalSubida()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header">
+                <h2 style="font-size: 1.3rem;"><i class="fa-solid fa-cloud-arrow-up"></i> Subir Archivo</h2>
+                <span class="modal-badge" id="upload-folder-badge" style="background: var(--primary-light); color: var(--primary-color);">Carpeta</span>
+            </div>
+            <div class="modal-body">
+                <form id="upload-form">
+                    <input type="hidden" id="upload_ejercicio_id" name="ejercicio_id">
+                    <input type="hidden" id="upload_carpeta" name="carpeta_destino">
+                    
+                    <div style="background: #f8fafc; border: 2px dashed var(--border-color); border-radius: 12px; padding: 30px; text-align: center; margin-bottom: 20px;">
+                        <i class="fa-solid fa-file-arrow-up" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 15px;"></i>
+                        <input type="file" id="archivo_upload" name="archivo" accept=".pdf,.jpg,.jpeg,.png" required style="display:block; margin: 0 auto 15px auto; max-width:100%;">
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
+                            Formatos permitidos: <strong>PDF, JPG, PNG</strong><br>
+                            Peso máximo: <strong>5 MB</strong>
+                        </p>
+                    </div>
+
+                    <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 12px; border-radius: 4px 8px 8px 4px; margin-bottom: 20px; font-size: 0.85rem; color: #92400e;">
+                        <i class="fa-solid fa-lightbulb" style="color: #f59e0b;"></i> 
+                        ¿Tu archivo es muy pesado? Comprímelo gratis en 
+                        <a href="https://www.ilovepdf.com/compress_pdf" target="_blank" style="color: #b45309; font-weight: bold; text-decoration: underline;">iLovePDF</a> antes de subirlo.
+                    </div>
+
+                    <div id="upload-mensaje" style="display:none; padding: 10px; border-radius: 6px; font-size: 0.9rem; margin-bottom: 15px;"></div>
+
+                    <button type="submit" id="btn-upload-submit" style="width: 100%; padding: 12px; background: var(--primary-color); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-upload"></i> Guardar Archivo
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

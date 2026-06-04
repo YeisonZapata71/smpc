@@ -399,11 +399,10 @@ window.openExerciseFolder = async function(id, exercise, sector) {
     modalExerciseTitle.textContent = exercise;
     modalSectorBadge.textContent = sector;
     
-    // Configurar la estructura de carpetas
-    // El primer item será un archivo dinámico con los formularios creados
     try {
-        const res = await fetch('api/obtener_formularios_ejercicio.php?ejercicio_id=' + id);
-        const forms = await res.json();
+        // Fetch Formularios
+        const resForms = await fetch('api/obtener_formularios_ejercicio.php?ejercicio_id=' + id);
+        const forms = await resForms.json();
         
         let formsChildren = [
             { type: 'file', is_action: true, action: `window.location.href='formulario_caracterizacion.php?ejercicio_id=${id}'`, name: '<b>+ Crear Nuevo Formulario de Caracterización</b>', icon: 'fa-plus-circle' }
@@ -420,62 +419,78 @@ window.openExerciseFolder = async function(id, exercise, sector) {
                 });
             });
         }
+
+        // Fetch Archivos Subidos
+        const resFiles = await fetch('api/obtener_archivos.php?ejercicio_id=' + id);
+        const filesData = await resFiles.json();
+
+        // Helper para extraer archivos de una carpeta específica
+        const getFilesForFolder = (folderName) => {
+            if (!filesData[folderName]) return [];
+            return filesData[folderName].map(file => ({
+                type: 'file',
+                is_action: true,
+                action: `window.open('${file.ruta_servidor}', '_blank')`,
+                name: file.nombre_original,
+                icon: file.tipo_archivo.includes('pdf') ? 'fa-file-pdf' : 'fa-file-image'
+            }));
+        };
         
         const dynamicStructure = [
             { type: 'folder', name: 'Formatos de caracterización y seguimiento', children: formsChildren, isOpen: true },
             { type: 'folder', name: 'Caja de Herramientas', children: [
-                { type: 'folder', name: 'Normatividad', children: [] },
-                { type: 'folder', name: 'Pedagogía', children: [] },
-                { type: 'folder', name: 'Otros', children: [] }
+                { type: 'folder', name: 'Normatividad', children: getFilesForFolder('Normatividad') },
+                { type: 'folder', name: 'Pedagogía', children: getFilesForFolder('Pedagogía') },
+                { type: 'folder', name: 'Otros', children: getFilesForFolder('Otros') }
             ]},
             { type: 'folder', name: 'Evidencias de actividades', children: [
-                { type: 'folder', name: 'Actividad 1', children: [
-                    { type: 'file', name: 'Acta', icon: 'fa-file-lines' },
-                    { type: 'file', name: 'Lista de asistencia', icon: 'fa-file-lines' },
-                    { type: 'file', name: 'Material audiovisual', icon: 'fa-file-video' },
-                    { type: 'file', name: 'Evaluación de la satisfacción', icon: 'fa-file-lines' },
-                    { type: 'folder', name: 'Otros', children: [] }
-                ]}
+                { type: 'folder', name: 'Actividad 1', children: getFilesForFolder('Actividad 1') },
+                { type: 'folder', name: 'Actividad 2', children: getFilesForFolder('Actividad 2') },
+                { type: 'folder', name: 'Actividad 3', children: getFilesForFolder('Actividad 3') }
             ]},
-            { type: 'folder', name: 'Resultados', children: [] }
+            { type: 'folder', name: 'Resultados', children: getFilesForFolder('Resultados') }
         ];
 
-        // Build folder tree HTML recursively
-        folderBrowserContainer.innerHTML = buildTreeHtml(dynamicStructure, true);
+        // Build folder tree HTML recursively (pasamos el id del ejercicio para el botón de subir)
+        folderBrowserContainer.innerHTML = buildTreeHtml(dynamicStructure, true, id);
         
         // Attach event listeners to collapsibles
         attachTreeListeners();
         
         folderModal.classList.add('active');
     } catch(e) {
-        console.error("Error al cargar formularios", e);
+        console.error("Error al cargar datos del ejercicio", e);
     }
 };
 
-function buildTreeHtml(nodes, isOpen = false) {
+function buildTreeHtml(nodes, isOpen = false, ejercicioId = null) {
     let html = '';
     nodes.forEach(node => {
         if (node.type === 'folder') {
             const hasChildren = node.children && node.children.length > 0;
+            
+            // Botón de subir archivo solo en ciertas carpetas (no en las principales si son solo contenedores)
+            const canUpload = node.name !== 'Formatos de caracterización y seguimiento' && node.name !== 'Caja de Herramientas' && node.name !== 'Evidencias de actividades';
+            const uploadBtn = canUpload ? `<button class="btn-upload-small" onclick="event.stopPropagation(); abrirModalSubida(${ejercicioId}, '${node.name}')" title="Subir archivo a esta carpeta"><i class="fa-solid fa-cloud-arrow-up"></i></button>` : '';
+
             html += `
                 <div class="tree-node">
                     <div class="tree-item collapsible ${isOpen ? 'open' : ''}">
-                        <i class="fa-solid fa-chevron-right chevron" style="visibility: ${hasChildren ? 'visible' : 'hidden'}"></i>
+                        <i class="fa-solid fa-chevron-right chevron" style="visibility: ${hasChildren || canUpload ? 'visible' : 'hidden'}"></i>
                         <i class="fa-solid ${isOpen ? 'fa-folder-open' : 'fa-folder'}"></i>
-                        <span>${node.name}</span>
+                        <span style="flex-grow: 1">${node.name}</span>
+                        ${uploadBtn}
                     </div>
-                    ${hasChildren ? `
                     <div class="tree-children" style="display: ${isOpen || node.isOpen ? 'block' : 'none'}">
-                        ${buildTreeHtml(node.children, false)}
+                        ${hasChildren ? buildTreeHtml(node.children, false, ejercicioId) : (canUpload ? '<div class="empty-folder-msg">Carpeta vacía</div>' : '')}
                     </div>
-                    ` : ''}
                 </div>
             `;
         } else {
             const actionStr = node.is_action ? `onclick="${node.action}" style="cursor:pointer; color:var(--primary-color)"` : '';
             html += `
                 <div class="tree-node">
-                    <div class="tree-item" ${actionStr}>
+                    <div class="tree-item file-item" ${actionStr}>
                         <i style="visibility: hidden" class="fa-solid fa-chevron-right chevron"></i>
                         <i class="fa-solid ${node.icon || 'fa-file'}"></i>
                         <span>${node.name}</span>
@@ -549,6 +564,74 @@ function setupThemeToggle() {
         }
     });
 }
+
+// Modales de Subida de Archivos
+window.abrirModalSubida = function(ejercicioId, carpetaDestino) {
+    document.getElementById('upload_ejercicio_id').value = ejercicioId;
+    document.getElementById('upload_carpeta').value = carpetaDestino;
+    document.getElementById('upload-folder-badge').textContent = carpetaDestino;
+    
+    // Reset form
+    document.getElementById('upload-form').reset();
+    document.getElementById('upload-mensaje').style.display = 'none';
+    
+    document.getElementById('upload-modal').classList.add('active');
+};
+
+window.cerrarModalSubida = function() {
+    document.getElementById('upload-modal').classList.remove('active');
+};
+
+document.getElementById('upload-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const btnSubmit = document.getElementById('btn-upload-submit');
+    const msj = document.getElementById('upload-mensaje');
+    
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Subiendo...';
+    
+    const formData = new FormData(this);
+    
+    try {
+        const res = await fetch('api/subir_archivo.php', {
+            method: 'POST',
+            body: formData
+        });
+        const result = await res.json();
+        
+        msj.style.display = 'block';
+        if (result.success) {
+            msj.style.background = '#dcfce7';
+            msj.style.color = '#16a34a';
+            msj.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${result.message}`;
+            
+            // Recargar la estructura de carpetas para mostrar el nuevo archivo
+            const eid = document.getElementById('upload_ejercicio_id').value;
+            const ejercicioTitle = document.getElementById('modal-exercise-title').textContent;
+            const sectorTitle = document.getElementById('modal-sector-badge').textContent;
+            
+            setTimeout(() => {
+                cerrarModalSubida();
+                openExerciseFolder(eid, ejercicioTitle, sectorTitle);
+            }, 1500);
+            
+        } else {
+            msj.style.background = '#fee2e2';
+            msj.style.color = '#dc2626';
+            msj.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${result.message}`;
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = '<i class="fa-solid fa-upload"></i> Guardar Archivo';
+        }
+    } catch (err) {
+        msj.style.display = 'block';
+        msj.style.background = '#fee2e2';
+        msj.style.color = '#dc2626';
+        msj.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Error de conexión al servidor.`;
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = '<i class="fa-solid fa-upload"></i> Guardar Archivo';
+    }
+});
 
 // Run init
 init();
