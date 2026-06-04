@@ -44,10 +44,11 @@ function processData() {
 // Folder Structure Blueprint
 const folderStructure = [
     { type: 'file', name: 'Formato de caracterización y seguimiento (documento adjunto)', icon: 'fa-file-pdf' },
-    { type: 'folder', name: 'Información clave', children: [] },
-    { type: 'folder', name: 'Normatividad', children: [] },
-    { type: 'folder', name: 'Pedagogía', children: [] },
-    { type: 'folder', name: 'Otros', children: [] },
+    { type: 'folder', name: 'Caja de Herramientas', children: [
+        { type: 'folder', name: 'Normatividad', children: [] },
+        { type: 'folder', name: 'Pedagogía', children: [] },
+        { type: 'folder', name: 'Otros', children: [] }
+    ]},
     { type: 'folder', name: 'Evidencias de actividades', children: [
         { type: 'folder', name: 'Actividad 1', children: [
             { type: 'file', name: 'Acta', icon: 'fa-file-lines' },
@@ -422,10 +423,11 @@ window.openExerciseFolder = async function(id, exercise, sector) {
         
         const dynamicStructure = [
             { type: 'folder', name: 'Formatos de caracterización y seguimiento', children: formsChildren, isOpen: true },
-            { type: 'folder', name: 'Información clave', children: [] },
-            { type: 'folder', name: 'Normatividad', children: [] },
-            { type: 'folder', name: 'Pedagogía', children: [] },
-            { type: 'folder', name: 'Otros', children: [] },
+            { type: 'folder', name: 'Caja de Herramientas', children: [
+                { type: 'folder', name: 'Normatividad', children: [] },
+                { type: 'folder', name: 'Pedagogía', children: [] },
+                { type: 'folder', name: 'Otros', children: [] }
+            ]},
             { type: 'folder', name: 'Evidencias de actividades', children: [
                 { type: 'folder', name: 'Actividad 1', children: [
                     { type: 'file', name: 'Acta', icon: 'fa-file-lines' },
